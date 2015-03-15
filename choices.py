@@ -1,6 +1,8 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import copy
+
 class djChoice(object):
 
     def __init__(self, label_name, presentation_name=None, db_name=None):
@@ -14,13 +16,28 @@ class djChoice(object):
 
         #TODO: format "hello_world" -> "Hello World"
         self.presentation_name = presentation_name or label_name
-        self.db_name = db_name or label_name
+
+        # Don't want 0 to be evaluated as false
+        if db_name is not None:
+            self.db_name = db_name
+        else:
+            self.db_name = self.label_name
 
     def __str__(self):
-        return "%s" % self.label_name
+        return "%s %s %s" % (self.label_name,
+                             self.presentation_name,
+                             self.db_name)
 
     def __unicode(self):
-        return u"%s" % self.label_name
+        return u"%s %s %s" % (self.label_name,
+                              self.presentation_name,
+                              self.db_name)
+
+    def __eq__(self, other):
+        return ((self.db_name == other.db_name)
+                and (self.label_name == other.label_name)
+                and (self.presentation_name == other.presentation_name))
+
 
 
 class djChoices(object):
@@ -41,6 +58,8 @@ class djChoices(object):
         # set of db representations
         self._db_values = set()
 
+        #import ipdb; ipdb.set_trace()
+
         for c in djChoice_list:
             if isinstance(c, djChoice):
                 self._choices.append(c)
@@ -55,7 +74,8 @@ class djChoices(object):
         return len(self._choices)
 
     def __iter__(self):
-        return iter(self._db_values)
+        return iter([(i.db_name, i.presentation_name) for i in self._choices])
+        #return iter(self._db_values)
         #return iter(_choices)
 
     def __getattr__(self, attname):
@@ -71,10 +91,11 @@ class djChoices(object):
         return self._display_map[key]
 
     def __add__(self, other):
-        if isinstance(other, self._class__):
+        if isinstance(other, self.__class__):
             #TODO: check for dupes?
             return djChoices(self._choices + other._choices)
         else:
+            #import ipdb; ipdb.set_trace()
             raise AttributeError(other)
 
     def __radd__(self, other):
@@ -94,6 +115,5 @@ class djChoices(object):
         return item in self._db_values
 
     def __deepcopy__(self, memo):
-        #TODO: what is this used for?
-        return self.__class__(*copy.deepcopy(self._choices, memo))
+        return self.__class__(copy.deepcopy(self._choices, memo))
 
