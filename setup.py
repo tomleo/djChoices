@@ -21,7 +21,7 @@ setup(
     long_description=long_description,
     author='Tom Leo',
     author_email='tom@tomleo.com',
-    url='',
+    url='https://github.com/tomleo/djChoices',
     packages=find_packages(),
     install_requires=['Django>=1.6.0'],
     classifiers=[
