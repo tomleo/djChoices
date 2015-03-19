@@ -2,8 +2,8 @@ from os.path import join
 from setuptools import setup, find_packages
 
 
-long_description = (open('README.rst').read() +
-                    open('CHANGES.rst').read() +
+long_description = (open('README.rst').read() + '\n' +
+                    open('CHANGES.rst').read() + '\n' +
                     open('TODO.rst').read())
 
 
@@ -22,13 +22,14 @@ setup(
     author='Tom Leo',
     author_email='tom@tomleo.com',
     url='https://github.com/tomleo/djChoices',
+    license='GPL',
     packages=find_packages(),
     install_requires=['Django>=1.6.0'],
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
@@ -36,8 +37,8 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Framework :: Django',
     ],
+    keywords='django model choices',
     zip_safe=False,
-    tests_require=["Django>=1.6.0"],
     test_suite='runtests.runtests'
 )
 
